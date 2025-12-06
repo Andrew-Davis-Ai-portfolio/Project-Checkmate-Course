@@ -1,1 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Project Checkmate — Failure AI Training Board</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell">
+    <div class="shell-inner">
+      <!-- HEADER -->
+      <header class="pc-header">
+        <div class="title-block">
+          <h1>
+            ♟️ Project Checkmate
+            <span class="title-badge">Failure AI Training Board</span>
+          </h1>
+          <p class="subtitle">
+            “Every move is a decision. Every defeat is data. Every victory is a system.”
+          </p>
+          <p class="subtitle-secondary">
+            This isn’t about winning once — it’s about surviving multiple openings against
+            Failure AI and logging the lessons.
+          </p>
+        </div>
 
+        <div class="hud">
+          <div class="hud-row">
+            <div class="hud-pill">
+              <div class="hud-dot"></div>
+              <span>Mode: <strong>Single-Player Strategy Loop</strong></span>
+            </div>
+            <div class="hud-pill">
+              <span>Objective: <strong>Survive 4 turns without sacrificing runway or ops integrity</strong></span>
+            </div>
+          </div>
+          <button class="btn-tts" id="btn-board-tts" type="button">
+            <span class="icon">🔊</span>
+            <span>Board Voice Briefing</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="layout">
+        <!-- LEFT: IDEA & MOVE CONSOLE -->
+        <section class="idea-card">
+          <header class="idea-header">
+            <h2>Turn Console — Describe Your Move</h2>
+            <p>
+              Each turn, you propose a strategic move. Project Checkmate maps it to a risk
+              style and lets Failure AI decide what breaks first.
+            </p>
+          </header>
+
+          <div class="turn-meta">
+            <span>Turn <strong id="turn-label">1</strong> / <span id="max-turns-label">4</span></span>
+            <span>Lost pieces: <strong id="lost-count-label">0</strong></span>
+          </div>
+
+          <div class="field">
+            <label for="idea-input">Step 1 — Describe the move you want to make:</label>
+            <textarea id="idea-input" rows="4"
+              placeholder="Example: Hire 5 sales reps and double our ad spend before we fix onboarding."
+            ></textarea>
+          </div>
+
+          <fieldset class="field">
+            <legend>Step 2 — How are you framing this move?</legend>
+            <p class="field-help">
+              Pick the mindset closest to your intent. Failure AI doesn’t care about labels —
+              it cares about consequences.
+            </p>
+            <div class="strategy-group">
+              <label class="radio-pill">
+                <input type="radio" name="strategy" value="aggressive" checked />
+                <span>
+                  <strong>Aggressive Expansion</strong>
+                  <small>Speed > stability. Chase growth.</small>
+                </span>
+              </label>
+
+              <label class="radio-pill">
+                <input type="radio" name="strategy" value="defensive" />
+                <span>
+                  <strong>Defensive Consolidation</strong>
+                  <small>Protect what you have. Avoid risk.</small>
+                </span>
+              </label>
+
+              <label class="radio-pill">
+                <input type="radio" name="strategy" value="speculative" />
+                <span>
+                  <strong>Speculative Bet</strong>
+                  <small>Big upside, unclear downside.</small>
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="console-actions">
+            <button class="btn primary" id="btn-play-turn" type="button">
+              ▶️ Lock Move & Let Failure AI Respond
+            </button>
+            <button class="btn ghost" id="btn-idea-tts" type="button">
+              🔊 Read My Move Back To Me
+            </button>
+          </div>
+
+          <p id="console-warning" class="console-warning"></p>
+
+          <button class="btn reset" id="btn-reset" type="button">
+            ⟳ Reset Board & Start New Simulation
+          </button>
+        </section>
+
+        <!-- CENTER: BOARD -->
+        <section class="board-card">
+          <div class="board-header">
+            <h2>Your Company — Battle Chess Layout</h2>
+          </div>
+
+          <div class="piece-grid" id="piece-grid"></div>
+
+          <p class="board-note">
+            Each piece represents a non-fiction part of a real company:
+            runway, ops, systems, strategy, innovation, and frontline staff.
+            Losing one doesn’t end the simulation — it exposes the pattern that killed it.
+          </p>
+        </section>
+
+        <!-- RIGHT: LOG & VERDICT -->
+        <aside class="side-card">
+          <div class="side-header">
+            <h3>Move Log & Failure Feed</h3>
+            <span class="side-tag">Every capture = data</span>
+          </div>
+
+          <div id="log" class="log"></div>
+
+          <div class="verdict-block">
+            <header class="verdict-header">
+              <h4>Session Verdict</h4>
+              <button class="btn-tts tiny" id="btn-verdict-tts" type="button">
+                <span class="icon">🔊</span> Voice Verdict
+              </button>
+            </header>
+            <p id="verdict-text" class="verdict-text">
+              Run at least one full 4-turn sequence to unlock a Failure AI verdict.
+            </p>
+          </div>
+
+          <footer class="side-footer">
+            <span>
+              In the full engine, a dedicated model tracks your patterns across many runs
+              and escalates counter-moves.
+            </span>
+            <span><strong>Project Checkmate System</strong> · Failure AI — The Final Boss</span>
+          </footer>
+        </aside>
+      </section>
+    </div>
+  </main>
+
+  <!-- FAILURE MODAL -->
+  <div class="modal-backdrop" id="failure-modal" aria-hidden="true">
+    <div class="modal">
+      <div class="modal-inner">
+        <div class="modal-label">Failure AI Report</div>
+        <div class="modal-title" id="modal-title">
+          <span>♟️</span>
+          <span>Piece Lost</span>
+        </div>
+        <div class="modal-piece" id="modal-piece-info"></div>
+        <div class="modal-body" id="modal-body"></div>
+
+        <div class="modal-lesson-label">Strategic Lesson</div>
+        <div class="modal-lesson" id="modal-lesson"></div>
+
+        <div id="modal-session-summary" class="demo-complete" style="display:none;"></div>
+
+        <div class="modal-footer">
+          <span class="hint" id="modal-hint">
+            Close this panel to continue the opening. You have limited turns.
+          </span>
+          <button class="btn-modal" id="modal-close-btn" type="button">
+            Understood — log it and return to board
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
